@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="ADMIN/header :: header" />
+<body>
+	<div th:replace="ADMIN/header :: navbar" />
+	<br/>
+
+	<div class="container">
+		<br/>
+		<form th:action = "@{/mvc/admin/product}" method="post" >
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Search by name</label>
+					<div class="input-group rounded">
+						<input name="name" type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+					</div>
+				</div>
+				&nbsp;
+				<div class="col-sm-3">
+					<label>Search by Category</label>
+					<select name="type" class="form-select" aria-label="Default select example">
+						<option th:value="''" selected></option>
+						<th:block th:each="category : ${categoryList}">
+							<option th:value="${category.getNameCategory()}" >[[${category.getNameCategory()}]]</option>
+						</th:block>
+					</select>
+				</div>
+				<div class="col-sm-2" >
+					<label>Search</label>
+					<br/>
+					<button class="btn btn-secondary" type="submit">Search<i class="fas fa-search"></i></button>
+				</div>
+			</div>
+		</form>
+		<br/>
+
+		<a th:href="@{/mvc/admin/product/formInsertProduct}"><button type="button" class="btn btn-info">Add Product</button></a>
+		<br/>
+		<table class="table table-striped" style="text-align:auto;">
+			<thead>
+				<tr>
+					<th>Name Product </th>
+					<th>Image</th>
+					<th>Price</th>
+					<th>Count</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="product : ${page.getContent()}">
+					<td th:text="${product.getName()}">Name Product</td>
+					<td ><img th:src="@{'data:image/jpeg;base64,'+${product.getImgBase64()}}" style="width:100px;height:100px; border:black solid 1px;" alt=""/></td>
+					<td th:text="${product.getPrice()}">Price</td>
+					<td th:text="${product.getCount()}">Count</td>
+					<td >
+						<a th:href="@{|/mvc/admin/product/formUpdateProduct/${product.getId()}|}"><button type="button" class="btn btn-info">Sửa</button></a>
+						&nbsp; &nbsp;
+						<a th:href="@{|/mvc/admin/product/delete/${product.getId()}|}"><button type="button" class="btn btn-info">Xóa</button></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div style="text-align: right" class="m-4">
+			<a class="paging2" style="font-size: 25px;"	th:if="${page.getPageable().getPageNumber()}>=1"
+			   th:href="@{'/mvc/admin/product?page=0' }"> &laquo; </a>
+			<a class="paging2" style="font-size: 25px;" th:if="${page.getPageable().getPageNumber()}>=1"
+			   th:href="@{'/mvc/admin/product?page=' + ${page.getPageable().getPageNumber() - 1}}">&lsaquo;</a>
+
+			<!--			<span th:each="i: ${#numbers.sequence(1, page.getTotalPages())}">-->
+			<a	class="paging1" th:if="${page.getPageable().getPageNumber()} >= 1 "
+				  th:href="@{'/mvc/admin/product?page=' + ${page.getPageable().getPageNumber() - 1}}">[[${page.getPageable().getPageNumber() - 1}]]</a>
+			<span class="paging1" >[[${page.getPageable().getPageNumber()}]]</span>&nbsp;
+			<a	class="paging1" th:if="${page.hasNext()}"
+				  th:href="@{'/mvc/admin/product?page=' + ${page.getPageable().getPageNumber() + 1}}">[[${page.getPageable().getPageNumber() + 1}]]</a>
+			<!--			</span>-->
+			<a class="paging2" style="font-size: 25px;"
+			   th:if="${page.getPageable().getPageNumber()}<${page.getTotalPages()}" )
+			   th:href="@{'/mvc/admin/product?page=' + ${page.getPageable().getPageNumber() + 1}}">&rsaquo;</a>
+			<a class="paging2" style="font-size: 25px;"
+			   th:href="@{'/mvc/admin/product?page=' + ${page.getTotalPages()}}">&raquo;</a>
+		</div>
+	</div>
+</body>
+</html>
