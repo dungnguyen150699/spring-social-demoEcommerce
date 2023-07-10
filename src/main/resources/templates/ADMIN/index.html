@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head th:replace="ADMIN/header :: header" />
+<body>
+	<div th:replace="ADMIN/header :: navbar" />
+	<div class="container">
+		<br/>
+		<form th:action = "@{/mvc/admin}" th:object="${searchUserManagement}" method="post" >
+			<div class="row">
+				<div class="col-sm-6">
+					<label>Search by email</label>
+					<div class="input-group rounded">
+						<input th:field="*{email}" type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+					</span>
+					</div>
+				</div>
+				&nbsp;
+				<div class="col-sm-3">
+					<label>Search by type Provider</label>
+					<select th:field="*{type}" class="form-select" aria-label="Default select example">
+						<option th:value="''" selected></option>
+						<option th:value="'facebook'">FACEBOOK</option>
+						<option th:value="'github'" >GITHUB</option>
+						<option th:value="'google'" >GOOGLE</option>
+						<option th:value="'local'" >LOCAL</option>
+					</select>
+				</div>
+				<div class="col-sm-2" >
+					<label>Search</label>
+					<br/>
+					<button class="btn btn-secondary" type="submit">Search<i class="fas fa-search"></i></button>
+				</div>
+			</div>
+		</form>
+		<br/>
+
+		<table class="table table-border" th>
+			<thead>
+				<tr>
+					<th>EMAIL</th>
+					<th>NAME</th>
+					<th colspan="2">PASSWORD</th>
+					<th>ROLES</th>
+					<th>PROVIDER</th>
+					<th>IMAGE</th>
+					<th>ACTION</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="user : ${page.getContent()}">
+					<td th:text="${user.getEmail()}">EMAIL</td>
+					<td th:text="${user.getName()}">NAME</td>
+					<td>
+						<th:block th:if="${user.getPassword()}">
+							<span th:text="${user.getPassword()}">PASSWORD</span>
+						</th:block>
+					</td>
+					<td>
+						<th:block th:if="${user.getPassword()}">
+							<a th:href="@{|/mvc/admin?id=${user.getId()}|}"><i class="fa-solid fa-eye"></i></a>
+						</th:block>
+					</td>
+					<td>
+						<th:block th:each="role,i : ${user.getRoles()}">
+							<th:block th:if="${i.index}==${user.roles.size()}-1">
+								<span th:text="|${role.getName()}|">Role</span>
+							</th:block>
+							<th:block th:if="${i.index}<${user.roles.size()}-1">
+								<span th:text="|${role.getName()},|">Role</span>
+							</th:block>
+						</th:block>
+					</td>
+					<td th:text="${user.getProvider()}">Provider</td>
+					<td >
+						<th:block th:if="${user.getImageUrl()}">
+							<image style="width:50px;height: 50px;" th:src="${user.getImageUrl()}"/>
+						</th:block>
+					</td>
+					<td >
+						<a th:if="${session.userPrincipal.attributes.get('name')} != ${user.getName()}" th:href="@{|/mvc/admin/users/delete/${user.getId()}|}">
+							<button type="button" class="btn btn-info">Xóa</button></a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<div style="text-align: right" class="m-4">
+			<a class="paging2" style="font-size: 25px;"	th:if="${page.getPageable().getPageNumber()}>=1"
+			   th:href="@{'/mvc/admin?page=0' }"> &laquo; </a>
+			<a class="paging2" style="font-size: 25px;" th:if="${page.getPageable().getPageNumber()}>=1"
+			   th:href="@{'/mvc/admin?page=' + ${page.getPageable().getPageNumber() - 1}}">&lsaquo;</a>
+
+<!--			<span th:each="i: ${#numbers.sequence(1, page.getTotalPages())}">-->
+				<a	class="paging1" th:if="${page.getPageable().getPageNumber()} >= 1 "
+					th:href="@{'/mvc/admin?page=' + ${page.getPageable().getPageNumber() - 1}}">[[${page.getPageable().getPageNumber() - 1}]]</a>
+				<span class="paging1" >[[${page.getPageable().getPageNumber()}]]</span>&nbsp;
+			<a	class="paging1" th:if="${page.hasNext()}"
+				  th:href="@{'/mvc/admin?page=' + ${page.getPageable().getPageNumber() + 1}}">[[${page.getPageable().getPageNumber() + 1}]]</a>
+<!--			</span>-->
+			<a class="paging2" style="font-size: 25px;"
+								   th:if="${page.getPageable().getPageNumber()}<${page.getTotalPages()}" )
+								   th:href="@{'/mvc/admin?page=' + ${page.getPageable().getPageNumber() + 1}}">&rsaquo;</a>
+			<a class="paging2" style="font-size: 25px;"
+			   th:href="@{'/mvc/admin?page=' + ${page.getTotalPages()}}">&raquo;</a>
+		</div>
+	</div>
+</body>
+</html>

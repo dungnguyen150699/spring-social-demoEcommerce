@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+     <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body>
+<div class="form-box">
+    <div class="head">Please fillout form</div>
+    <form th:action = "@{/mvc/doRegister}" th:object="${user}" method="post" id="login-form">
+        <div class="form-group">
+            <input type="text" th:field="*{email}" placeholder="Email" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <input type="text" th:field="*{name}" placeholder="UserName" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <input type="password" th:field="*{password}"  placeholder="Password" class="form-control"  required />
+        </div>
+        <input type="submit" value="Register" class="btn" />
+        <p class="text-p"> <a th:href="@{/mvc/login}">Sign in</a> </p>
+        <p class="label-control" th:text="${meg}"></p>
+    </form>
+  </div>
+</body>
+</html>
